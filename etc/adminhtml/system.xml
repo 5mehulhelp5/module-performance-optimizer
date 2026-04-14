@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Panth Infotech. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="panth" translate="label" sortOrder="400">
+            <label>🚀 Panth Extensions</label>
+        </tab>
+
+        <section id="panth_performance" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Performance Optimizer</label>
+            <tab>panth</tab>
+            <resource>Panth_PerformanceOptimizer::config</resource>
+
+            <!-- General Settings -->
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Performance Optimizer</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable frontend performance optimizations (script deferral, font-display, CLS prevention, iframe lazy loading)</comment>
+                    <backend_model>Panth\PerformanceOptimizer\Model\Config\Backend\Enabled</backend_model>
+                </field>
+            </group>
+
+            <!-- Script Optimization -->
+            <group id="script_optimization" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Script Optimization</label>
+                <field id="defer_third_party" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Defer Third-Party Scripts</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Automatically add async/defer to third-party scripts (analytics, chat widgets, social embeds) to reduce main thread blocking</comment>
+                    <depends>
+                        <field id="panth_performance/general/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="excluded_domains" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Excluded Domains</label>
+                    <comment>Third-party domains to exclude from deferral (one per line). Scripts from these domains will not be modified.</comment>
+                    <depends>
+                        <field id="defer_third_party">1</field>
+                    </depends>
+                </field>
+            </group>
+
+            <!-- Font Optimization -->
+            <group id="font_optimization" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Font Optimization</label>
+                <field id="font_display_swap" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Add font-display: swap</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Inject font-display: swap to prevent Flash of Invisible Text (FOIT). Shows fallback font immediately while custom fonts load.</comment>
+                    <depends>
+                        <field id="panth_performance/general/enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+
+            <!-- Layout Stability -->
+            <group id="layout_stability" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Layout Stability (CLS Prevention)</label>
+                <field id="x_cloak_style" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Add x-cloak Style</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Inject [x-cloak]{display:none!important} to prevent Alpine.js elements from flashing unstyled content before initialization</comment>
+                    <depends>
+                        <field id="panth_performance/general/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="set_image_dimensions" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Set Image Dimensions</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Automatically add width/height attributes to images missing them (client-side, after load) to reduce CLS</comment>
+                    <depends>
+                        <field id="panth_performance/general/enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+
+            <!-- Iframe Lazy Loading -->
+            <group id="iframe_lazyload" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Iframe Lazy Loading</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Iframe Lazy Loading</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Defer loading of iframes (YouTube, Vimeo, Google Maps, etc.) until they scroll into view using IntersectionObserver</comment>
+                    <depends>
+                        <field id="panth_performance/general/enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+
+        </section>
+    </system>
+</config>

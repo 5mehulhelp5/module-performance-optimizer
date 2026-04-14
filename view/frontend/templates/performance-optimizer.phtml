@@ -1,0 +1,163 @@
+<?php
+/**
+ * Copyright © Panth Infotech. All rights reserved.
+ * Performance Optimizer - Actionable frontend optimizations
+ *
+ * This module handles:
+ * - Deferring third-party scripts (analytics, chat widgets, social embeds)
+ * - font-display: swap to prevent Flash of Invisible Text (FOIT)
+ * - [x-cloak] style for Alpine.js CLS prevention
+ * - Client-side image dimension setting to reduce CLS
+ * - Iframe lazy loading via IntersectionObserver
+ *
+ * Note: Core Web Vitals monitoring and resource hints are handled by Panth_CoreWebVitals.
+ *
+ * @var $block \Panth\PerformanceOptimizer\Block\PerformanceOptimizer
+ */
+
+$helper = $block->getPerformanceHelper();
+
+if (!$helper->isEnabled()) {
+    return;
+}
+?>
+
+<?php if ($helper->isXCloakStyleEnabled()): ?>
+<!-- Performance Optimizer: Alpine.js CLS prevention -->
+<style>[x-cloak]{display:none!important}</style>
+<?php endif; ?>
+
+<?php if ($helper->isFontDisplaySwapEnabled()): ?>
+<!-- Performance Optimizer: Prevent Flash of Invisible Text -->
+<style>
+@font-face{font-display:swap!important}
+</style>
+<?php endif; ?>
+
+<?php if ($helper->isDeferThirdPartyEnabled()): ?>
+<!-- Performance Optimizer: Defer third-party scripts -->
+<script>
+(function(){
+    'use strict';
+    var excludedDomains = <?= /* @noEscape */ $block->getExcludedDomainsJson() ?>;
+    var currentHost = window.location.hostname;
+
+    function isThirdParty(src) {
+        if (!src) return false;
+        try {
+            var url = new URL(src, window.location.origin);
+            if (url.hostname === currentHost) return false;
+            for (var i = 0; i < excludedDomains.length; i++) {
+                if (url.hostname.indexOf(excludedDomains[i]) !== -1) return false;
+            }
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    function deferThirdPartyScripts() {
+        var scripts = document.querySelectorAll('script[src]');
+        for (var i = 0; i < scripts.length; i++) {
+            var script = scripts[i];
+            if (isThirdParty(script.src) && !script.defer && !script.async) {
+                script.defer = true;
+            }
+        }
+    }
+
+    // Observe new scripts added to DOM and defer third-party ones
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+                if (node.tagName === 'SCRIPT' && node.src && isThirdParty(node.src) && !node.defer && !node.async) {
+                    node.defer = true;
+                }
+            });
+        });
+    });
+
+    observer.observe(document.documentElement, {childList: true, subtree: true});
+
+    // Also defer existing third-party scripts on DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', deferThirdPartyScripts);
+    } else {
+        deferThirdPartyScripts();
+    }
+})();
+</script>
+<?php endif; ?>
+
+<?php if ($helper->isSetImageDimensionsEnabled()): ?>
+<!-- Performance Optimizer: Set missing image dimensions to reduce CLS -->
+<script>
+(function(){
+    'use strict';
+    function setImageDimensions() {
+        var images = document.querySelectorAll('img:not([width]):not([height])');
+        for (var i = 0; i < images.length; i++) {
+            (function(img) {
+                if (img.complete && img.naturalWidth) {
+                    img.setAttribute('width', img.naturalWidth);
+                    img.setAttribute('height', img.naturalHeight);
+                } else {
+                    img.addEventListener('load', function() {
+                        if (img.naturalWidth) {
+                            img.setAttribute('width', img.naturalWidth);
+                            img.setAttribute('height', img.naturalHeight);
+                        }
+                    });
+                }
+            })(images[i]);
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setImageDimensions);
+    } else {
+        setImageDimensions();
+    }
+})();
+</script>
+<?php endif; ?>
+
+<?php if ($helper->isIframeLazyLoadEnabled()): ?>
+<!-- Performance Optimizer: Lazy load iframes via IntersectionObserver -->
+<script>
+(function(){
+    'use strict';
+    function lazyLoadIframes() {
+        var iframes = document.querySelectorAll('iframe[src]');
+        if (!iframes.length || !('IntersectionObserver' in window)) return;
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var iframe = entry.target;
+                    if (iframe.dataset.lazySrc) {
+                        iframe.src = iframe.dataset.lazySrc;
+                        iframe.removeAttribute('data-lazy-src');
+                    }
+                    observer.unobserve(iframe);
+                }
+            });
+        }, {rootMargin: '200px'});
+
+        iframes.forEach(function(iframe) {
+            var rect = iframe.getBoundingClientRect();
+            // Only lazy-load iframes below the fold
+            if (rect.top > window.innerHeight) {
+                iframe.dataset.lazySrc = iframe.src;
+                iframe.removeAttribute('src');
+                observer.observe(iframe);
+            }
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', lazyLoadIframes);
+    } else {
+        lazyLoadIframes();
+    }
+})();
+</script>
+<?php endif; ?>
