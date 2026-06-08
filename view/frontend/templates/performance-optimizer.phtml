@@ -91,11 +91,11 @@ if (!$helper->isEnabled()) {
 
 <?php /*
  * set_image_dimensions is handled server-side by
- * Panth\PerformanceOptimizer\Plugin\Layout\InjectImageDimensionsPlugin —
+ * Panth\PerformanceOptimizer\Plugin\Layout\InjectImageDimensionsPlugin -
  * width/height attributes are injected before the HTML reaches the browser
  * so the layout reservation is correct on first paint. The previous
  * client-side fallback set dimensions inside the load handler, which fired
- * AFTER the image had already shifted the layout — useless for CLS — so
+ * AFTER the image had already shifted the layout - useless for CLS - so
  * it was removed.
  */ ?>
 
