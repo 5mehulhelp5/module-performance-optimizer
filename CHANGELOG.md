@@ -4,6 +4,13 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.5] - 2026-06-18
+
+### Changed
+- Rewrote README to match gold-template structure: added Quick Answer, Who Is It For, full Configuration table sourced from system.xml, How It Works, and Quick Links table.
+- Updated canonical and all product links to the live product page.
+- Removed link to commercemarketplace.adobe.com; product page link used instead.
+
 ## [1.0.0] — Initial release
 
 ### Added
