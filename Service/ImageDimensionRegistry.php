@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright © Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\PerformanceOptimizer\Service;
@@ -12,23 +9,12 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Resolves <img src="..."> URLs to (width, height) pairs, with two layers
- * of caching so we don't stat the same file 50× per page-load.
- *
- *  1. Per-request memo (`array<string, array{w:int,h:int}|null>`).
- *  2. Persistent Magento cache (default backend) keyed by the URL path.
- *
- * The "null" sentinel is also cached on miss so repeated lookups for an
- * unresolvable / external URL don't keep retrying getimagesize().
- */
 class ImageDimensionRegistry
 {
     private const CACHE_KEY_PREFIX = 'panth_perf_imgdim_';
     private const CACHE_TAG = 'panth_perf_imgdim';
     private const CACHE_LIFETIME = 86400;
 
-    /** @var array<string, array{width:int,height:int}|null> */
     private array $memo = [];
 
     public function __construct(
@@ -39,9 +25,6 @@ class ImageDimensionRegistry
     ) {
     }
 
-    /**
-     * @return array{width:int,height:int}|null
-     */
     public function getDimensions(string $src): ?array
     {
         $key = $this->normalize($src);
@@ -60,7 +43,6 @@ class ImageDimensionRegistry
                 $this->memo[$key] = is_array($value) ? $value : null;
                 return $this->memo[$key];
             } catch (\Throwable) {
-                // fall through and recompute
             }
         }
 
@@ -75,10 +57,6 @@ class ImageDimensionRegistry
         return $dims;
     }
 
-    /**
-     * Strip query strings, fragments, and the per-deploy `version{N}/`
-     * segment so the same physical file produces a stable cache key.
-     */
     private function normalize(string $src): ?string
     {
         $src = trim($src);
@@ -89,8 +67,7 @@ class ImageDimensionRegistry
         if ($src === '') {
             return null;
         }
-        // Drop scheme + host so external URLs (different host) aren't matched
-        // and same-host URLs collapse to a path.
+
         if (preg_match('#^https?://([^/]+)(/.*)?$#i', $src, $m)) {
             try {
                 $base = parse_url($this->storeManager->getStore()->getBaseUrl(), PHP_URL_HOST);
@@ -105,15 +82,11 @@ class ImageDimensionRegistry
         if (!str_starts_with($src, '/')) {
             return null;
         }
-        // Magento static URLs include a /static/version1234567/ deploy ID;
-        // strip it so the path matches `pub/static/<rest>` on disk.
+
         $src = preg_replace('#^/static/version\d+/#', '/static/', $src) ?? $src;
         return $src;
     }
 
-    /**
-     * @return array{width:int,height:int}|null
-     */
     private function resolveFromDisk(string $path): ?array
     {
         try {

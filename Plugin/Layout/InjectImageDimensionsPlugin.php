@@ -1,7 +1,4 @@
 <?php
-/**
- * Copyright © Panth Infotech. All rights reserved.
- */
 declare(strict_types=1);
 
 namespace Panth\PerformanceOptimizer\Plugin\Layout;
@@ -10,19 +7,6 @@ use Magento\Framework\View\LayoutInterface;
 use Panth\PerformanceOptimizer\Helper\Data as PerformanceHelper;
 use Panth\PerformanceOptimizer\Service\ImageDimensionRegistry;
 
-/**
- * Injects width="" and height="" attributes onto <img> tags that ship
- * without dimensions, so the browser can reserve layout space at parse
- * time and avoid CLS during image load.
- *
- * Runs as an after-plugin on `Layout::getOutput()` so it sees the fully
- * rendered HTML body before it's flushed to the response. Skips:
- *   - tags that already declare width AND height
- *   - tags without a usable src attribute
- *   - URLs the registry can't resolve (external CDN, missing file, etc.)
- *
- * The set-image-dimensions admin toggle gates the entire pass.
- */
 class InjectImageDimensionsPlugin
 {
     public function __construct(
@@ -31,12 +15,6 @@ class InjectImageDimensionsPlugin
     ) {
     }
 
-    /**
-     * @param LayoutInterface $subject
-     * @param mixed $result
-     * @return mixed
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     public function afterGetOutput(LayoutInterface $subject, $result)
     {
         if (!is_string($result) || $result === '') {
