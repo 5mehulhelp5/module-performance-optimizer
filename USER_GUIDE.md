@@ -1,4 +1,4 @@
-# Panth Performance Optimizer — User Guide
+# Panth Performance Optimizer - User Guide
 
 This guide is for store administrators who want to configure and get the
 most out of the Performance Optimizer extension.
@@ -103,7 +103,7 @@ scripts are also patched on `DOMContentLoaded`.
 ### font-display: swap
 
 A `<style>` block is injected with `@font-face{font-display:swap!important}`.
-This is a global override — all fonts on the page will show a fallback
+This is a global override - all fonts on the page will show a fallback
 font immediately while the custom font downloads, then swap in once
 ready.
 

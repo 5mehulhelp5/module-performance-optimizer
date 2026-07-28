@@ -4,6 +4,11 @@ All notable changes to this extension are documented here. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.7]
+
+### Changed
+- Replaced typographic characters (em dashes, curly quotes, ellipsis) with plain ASCII punctuation. No functional changes.
+
 ## [1.0.6]
 
 ### Changed
@@ -16,23 +21,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Updated canonical and all product links to the live product page.
 - Removed link to commercemarketplace.adobe.com; product page link used instead.
 
-## [1.0.0] — Initial release
+## [1.0.0] - Initial release
 
 ### Added
-- **Defer Third-Party Scripts** — Automatically adds `defer` to
+- **Defer Third-Party Scripts** - Automatically adds `defer` to
   third-party `<script>` tags (analytics, chat widgets, social embeds)
   to reduce main-thread blocking. Uses MutationObserver to catch
   dynamically injected scripts. Configurable domain exclusion list.
-- **font-display: swap** — Injects a global CSS rule that forces
+- **font-display: swap** - Injects a global CSS rule that forces
   `font-display: swap` on all `@font-face` declarations, preventing
   Flash of Invisible Text (FOIT).
-- **Alpine.js CLS Prevention** — Injects
+- **Alpine.js CLS Prevention** - Injects
   `[x-cloak]{display:none!important}` to prevent Alpine.js elements
   from flashing unstyled content before initialization.
-- **Auto Image Dimensions** — Client-side script that sets missing
+- **Auto Image Dimensions** - Client-side script that sets missing
   `width`/`height` attributes on images to reduce Cumulative Layout
   Shift (CLS).
-- **Iframe Lazy Loading** — Defers loading of below-the-fold iframes
+- **Iframe Lazy Loading** - Defers loading of below-the-fold iframes
   via IntersectionObserver until they scroll into view. 200px root
   margin for smooth pre-loading.
 - **Admin configuration** under `Stores > Configuration > Panth
@@ -41,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **ACL resources** for granular admin permission control.
 
 ### Compatibility
-- Magento Open Source / Commerce / Cloud 2.4.4 — 2.4.8
+- Magento Open Source / Commerce / Cloud 2.4.4 - 2.4.8
 - PHP 8.1, 8.2, 8.3, 8.4
 - Hyva and Luma themes
 
