@@ -1,0 +1,10 @@
+<?php
+declare(strict_types=1);
+
+namespace Panth\PerformanceOptimizer\Model\Config\Backend;
+
+use Magento\Framework\App\Config\Value;
+
+class Enabled extends Value
+{
+}

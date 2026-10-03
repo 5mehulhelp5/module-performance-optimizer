@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Panth Infotech. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <panth_performance>
+            <general>
+                <enabled>1</enabled>
+            </general>
+            <script_optimization>
+                <defer_third_party>1</defer_third_party>
+                <excluded_domains></excluded_domains>
+            </script_optimization>
+            <font_optimization>
+                <font_display_swap>1</font_display_swap>
+            </font_optimization>
+            <layout_stability>
+                <x_cloak_style>1</x_cloak_style>
+                <set_image_dimensions>1</set_image_dimensions>
+            </layout_stability>
+            <iframe_lazyload>
+                <enabled>1</enabled>
+            </iframe_lazyload>
+        </panth_performance>
+    </default>
+</config>

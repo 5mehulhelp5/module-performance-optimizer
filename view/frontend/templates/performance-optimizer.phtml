@@ -1,0 +1,34 @@
+<?php
+/**
+ * Copyright © Panth Infotech. All rights reserved.
+ * Performance Optimizer - Actionable frontend optimizations
+ *
+ * This module handles:
+ * - [x-cloak] style for Alpine.js CLS prevention
+ *
+ * Note: Core Web Vitals monitoring and resource hints are handled by Panth_CoreWebVitals.
+ *
+ * @var $block \Panth\PerformanceOptimizer\Block\PerformanceOptimizer
+ */
+
+$helper = $block->getPerformanceHelper();
+
+if (!$helper->isEnabled()) {
+    return;
+}
+?>
+
+<?php if ($helper->isXCloakStyleEnabled()): ?>
+<!-- Performance Optimizer: Alpine.js CLS prevention -->
+<style>[x-cloak]{display:none!important}</style>
+<?php endif; ?>
+
+<?php /*
+ * set_image_dimensions is handled server-side by
+ * Panth\PerformanceOptimizer\Plugin\Layout\InjectImageDimensionsPlugin -
+ * width/height attributes are injected before the HTML reaches the browser
+ * so the layout reservation is correct on first paint. The previous
+ * client-side fallback set dimensions inside the load handler, which fired
+ * AFTER the image had already shifted the layout - useless for CLS - so
+ * it was removed.
+ */ ?>
